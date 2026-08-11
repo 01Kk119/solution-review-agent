@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{DocumentTitle}}</title>
+  <style>
+    :root {
+      --ink: #263238;
+      --muted: #68737d;
+      --line: #dce3e8;
+      --paper: #ffffff;
+      --canvas: #f3f5f7;
+      --navy: #324a5f;
+      --accent: #6f8797;
+      --success: #6f8f7b;
+      --warn: #b18b5a;
+      --danger: #a96868;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--canvas); font: 15px/1.65 "Segoe UI", "Microsoft YaHei", sans-serif; }
+    header { color: #fff; background: linear-gradient(135deg, var(--navy), var(--accent)); padding: 28px 34px; }
+    header h1 { margin: 0 0 6px; font-size: 26px; }
+    header p { margin: 0; opacity: .86; }
+    main { width: min(1180px, calc(100% - 40px)); margin: 24px auto 48px; }
+    section, .card { margin: 0 0 18px; padding: 22px 24px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 18px rgba(38,50,56,.06); }
+    h2 { margin: 0 0 14px; color: var(--navy); font-size: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--navy); background: #eef2f4; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .metric { padding: 16px; background: rgba(111,135,151,.1); border-radius: 10px; }
+    .tag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: #e8edf0; }
+    .success { color: #365743; background: #e7f0ea; }
+    .warn { color: #73542e; background: #f5ecdf; }
+    .danger { color: #743d3d; background: #f4e5e5; }
+    @media print { body { background: #fff; } main { width: 100%; margin: 0; } section, .card { box-shadow: none; break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{DocumentTitle}}</h1>
+    <p>{{ProjectMeta}}</p>
+  </header>
+  <main>
+    {{DocumentBody}}
+  </main>
+</body>
+</html>

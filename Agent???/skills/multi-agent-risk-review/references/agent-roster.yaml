@@ -1,0 +1,213 @@
+version: "2.1"
+
+runner:
+  max_parallel_read_agents: 2
+  max_parallel_llm_calls: 2
+  domain_request_timeout_seconds: 120
+  domain_request_max_retries: 1
+  serialize_writes: true
+  continue_on_worker_failure: true
+  interaction_policy:
+    question_rounds: 1
+    max_questions_per_agent_per_run: 1
+    question_scope: "single_highest_likelihood_new_product_function"
+    follow_up_questions: false
+
+tool_executor:
+  enforcement: "central"
+  registry:
+    read_project_artifact:
+      category: "project_read"
+      read_only: true
+      mutating: false
+      requires_confirmation: false
+    write_final_review:
+      category: "review_write"
+      read_only: false
+      mutating: true
+      requires_confirmation: false
+    export_review_result:
+      category: "review_export"
+      read_only: false
+      mutating: true
+      requires_confirmation: true
+    register_project_review:
+      category: "summary_index_write"
+      read_only: false
+      mutating: true
+      requires_confirmation: false
+
+planner:
+  name: "risk_review_planner"
+  display: "风险评审 Planner"
+  read_only: true
+  permissions:
+    - "project:read"
+  tool_view:
+    - "read_project_artifact"
+  skill_subset: []
+  prompt_ref: "./domain-agent-prompts.md#planner"
+  max_rounds: 2
+
+workers:
+  - name: "pick_place_tpm"
+    display: "取放 TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: []
+    prompt_ref: "./domain-agent-prompts.md#取放-tpm"
+    result_domain: "pick_place"
+    knowledge_sources:
+      - "capability_specs/load_carrier_capability_spec.md"
+      - "capability_specs/pick_and_place_capability_spec.md"
+    activation: "full_review_or_pick_place_signal"
+    max_rounds: 4
+
+  - name: "navigation_control_tpm"
+    display: "导航/定位/控制 TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: []
+    prompt_ref: "./domain-agent-prompts.md#导航定位控制-tpm"
+    result_domain: "navigation_control"
+    knowledge_sources:
+      - "capability_specs/navigation_capability_spec.md"
+      - "shared_references/probabilistic_robotics_ch02_recursive_state_estimation.md"
+      - "shared_references/probabilistic_robotics_ch03_gaussian_filters.md"
+    activation: "full_review_or_navigation_signal"
+    max_rounds: 4
+
+  - name: "dispatch_efficiency_tpm"
+    display: "调度/节拍/效率 TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: []
+    prompt_ref: "./domain-agent-prompts.md#调度节拍效率-tpm"
+    result_domain: "dispatch_efficiency"
+    knowledge_sources:
+      - "capability_specs/dispatch_capability_spec.md"
+    activation: "full_review_or_dispatch_signal"
+    max_rounds: 4
+
+  - name: "software_rcs_interface_tpm"
+    display: "软件/RCS/接口/HMI TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: []
+    prompt_ref: "./domain-agent-prompts.md#软件rcs接口hmi-tpm"
+    result_domain: "software_rcs_interface"
+    knowledge_sources:
+      - "capability_specs/software_solution_review_guide.md"
+      - "shared_references/product_release_notes_5_2_2_20250930.md"
+      - "shared_references/product_release_notes_5_3_2_20260430.md"
+    activation: "full_review_or_software_signal"
+    max_rounds: 4
+
+  - name: "mingmou_risk_tpm"
+    display: "明眸领域风险识别 TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: ["mingmou-risk-tpm"]
+    prompt_ref: "../../mingmou-risk-tpm/SKILL.md"
+    result_domain: "mingmou"
+    knowledge_sources:
+      - "brighteyes/brighteyes_capability_spec.md"
+      - "brighteyes/brighteyes_specification.md"
+    activation: "mingmou_signal_only"
+    max_rounds: 4
+
+critic:
+  name: "evidence_critic_tpm"
+  display: "证据与冲突质检 TPM"
+  read_only: true
+  permissions: ["project:read"]
+  tool_view: ["read_project_artifact"]
+  skill_subset: []
+  prompt_ref: "./domain-agent-prompts.md#证据与冲突质检-tpm"
+  max_rounds: 3
+
+decision_agents:
+  - name: "version_fit_tpm"
+    display: "版本适配 TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: []
+    prompt_ref: "./domain-agent-prompts.md#版本适配-tpm"
+    result_contract: "VersionRecommendationResult"
+    knowledge_sources:
+      - "shared_references/capability_specification_guide.md"
+      - "shared_references/product_release_notes_5_2_2_20250930.md"
+      - "shared_references/product_release_notes_5_3_2_20260430.md"
+    depends_on: ["evidence_critic_tpm"]
+    max_rounds: 3
+
+  - name: "nonstandard_classifier_tpm"
+    display: "非标判定 TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: []
+    prompt_ref: "./domain-agent-prompts.md#非标判定-tpm"
+    result_contract: "NonstandardResult"
+    knowledge_sources:
+      - "shared_references/capability_specification_guide.md"
+      - "shared_references/product_release_notes_5_2_2_20250930.md"
+      - "shared_references/product_release_notes_5_3_2_20260430.md"
+    depends_on:
+      - "evidence_critic_tpm"
+      - "version_fit_tpm"
+    max_rounds: 3
+
+  - name: "effort_estimation_tpm"
+    display: "人时估算 TPM"
+    read_only: true
+    permissions: ["project:read"]
+    tool_view: ["read_project_artifact"]
+    skill_subset: []
+    prompt_ref: "./domain-agent-prompts.md#人时估算-tpm"
+    result_contract: "EffortEstimateResult"
+    knowledge_sources:
+      - "delivery_baselines/effort_estimation_baseline.md"
+    depends_on:
+      - "version_fit_tpm"
+      - "nonstandard_classifier_tpm"
+    max_rounds: 3
+
+synthesizer:
+  name: "global_summary_tpm"
+  display: "全局汇总 TPM"
+  read_only: false
+  permissions:
+    - "project:read"
+    - "review:write"
+  tool_view:
+    - "read_project_artifact"
+    - "write_final_review"
+  skill_subset:
+    - "global-summary-tpm"
+  prompt_ref: "../../global-summary-tpm/SKILL.md"
+  depends_on:
+    - "evidence_critic_tpm"
+    - "version_fit_tpm"
+    - "nonstandard_classifier_tpm"
+    - "effort_estimation_tpm"
+  write_scope:
+    - "<ProjectOutputDir>/review_analysis.md"
+    - "<ProjectOutputDir>/review_analysis.html"
+    - "<ProjectOutputDir>/version_recommendation.md"
+    - "<ProjectOutputDir>/version_recommendation.html"
+    - "<ProjectOutputDir>/custom_development_checklist.md"
+    - "<ProjectOutputDir>/custom_development_checklist.html"
+    - "<ProjectOutputDir>/nonstandard_development_items.md"
+    - "<ProjectOutputDir>/nonstandard_development_items.html"
+    - "<ProjectOutputDir>/effort_recommendation.md"
+    - "<ProjectOutputDir>/effort_recommendation.html"
+    - "<trace_dir>/final_risk_register.json"
+    - "<trace_dir>/final_manifest.json"
+  max_rounds: 6

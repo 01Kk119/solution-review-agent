@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.key
+*.pem
+review-console/data/
+02_项目资料与运行数据/
+

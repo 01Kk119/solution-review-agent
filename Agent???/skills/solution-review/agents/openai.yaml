@@ -1,0 +1,7 @@
+interface:
+  display_name: "方案评审"
+  short_description: "完成文件解析、需求建模、多 Agent 风险识别、版本/现场/非标/人时建议和全局汇总"
+  default_prompt: "Use $solution-review to parse the source files, build a traceable requirements model without making risk judgments, run the multi-agent risk and delivery-decision review, and save one main report plus five separate attachments."
+
+policy:
+  allow_implicit_invocation: true

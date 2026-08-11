@@ -1,0 +1,7 @@
+interface:
+  display_name: "全局汇总 TPM"
+  short_description: "合并功能风险与决策结果，输出主报告及版本、定制、非标、人时附件"
+  default_prompt: "Use $global-summary-tpm to synthesize validated functional-risk and delivery-decision results into one main report and four separate attachments in Markdown and HTML."
+
+policy:
+  allow_implicit_invocation: true

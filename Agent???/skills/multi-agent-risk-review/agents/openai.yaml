@@ -1,0 +1,7 @@
+interface:
+  display_name: "多 Agent 风险评审"
+  short_description: "编排取放等功能风险及版本、非标与人时 Agent，输出主报告和四份附件"
+  default_prompt: "Use $multi-agent-risk-review to run the non-standard functional risk review and three decision Agents, then produce one main report and four separate attachments."
+
+policy:
+  allow_implicit_invocation: true

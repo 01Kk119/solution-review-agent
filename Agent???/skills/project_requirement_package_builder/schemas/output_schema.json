@@ -1,0 +1,46 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "output_project package",
+  "description": "输出资料包目录结构约定；validate 命令按此校验",
+  "type": "object",
+  "required": ["required_files"],
+  "properties": {
+    "required_files": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [
+        "project_requirement_package.md",
+        "project_requirement_package.html",
+        "metadata.json",
+        "evidence_index.json",
+        "missing_info_checklist.md"
+      ]
+    },
+    "required_dirs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["assets", "extracted"]
+    },
+    "markdown_required_sections": {
+      "type": "array",
+      "description": "主 Markdown 必须包含的一级章节标题（validate 检查）",
+      "items": { "type": "string" },
+      "default": [
+        "## 0. 文档说明",
+        "## 1. 项目基础信息",
+        "## 2. 业务流程与作业流",
+        "## 3. 车辆与产品形态",
+        "## 4. 搬运对象与载具信息",
+        "## 5. 取货 / 放货 / 识别场景",
+        "## 6. 导航与现场环境",
+        "## 7. 调度、接口与软件模块",
+        "## 8. 硬件与安全相关信息",
+        "## 9. 项目需求清单",
+        "## 10. 待确认问题清单",
+        "## 11. 资料侧初步风险提示",
+        "## 12. 原始资料索引",
+        "## 13. AI 处理日志"
+      ]
+    }
+  }
+}

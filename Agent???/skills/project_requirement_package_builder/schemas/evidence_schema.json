@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "evidence_index",
+  "description": "证据索引（evidence_index.json）：资料包中的重要信息 → 源文件位置映射，用于追溯",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "source_file", "source_type", "page_or_slide", "extracted_text"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^E[0-9]{3,}$",
+        "description": "证据编号，如 E001；在 Markdown 正文中以（来源：… / 证据 E001）形式引用"
+      },
+      "source_file": { "type": "string", "description": "源文件相对路径或文件名" },
+      "source_type": {
+        "type": "string",
+        "enum": ["pptx", "pdf", "xlsx", "xls", "docx", "md", "txt", "html", "image", "media", "other"]
+      },
+      "page_or_slide": {
+        "type": "string",
+        "description": "定位符：slide 12 / page 7 / sheet 装卸车(Truck) 行12 / 段落 35 / 00:12:35 / 整图 等"
+      },
+      "extracted_text": { "type": "string", "description": "该证据处的原文摘录（可截断，保留关键句）" },
+      "asset_path": { "type": "string", "description": "相关图片/快照在输出包内的相对路径（可选）" },
+      "used_in_sections": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "该证据被用于资料包的哪些章节，如 5.1 取货场景"
+      },
+      "confidence": {
+        "type": "string",
+        "enum": ["原文明确", "会议口头信息", "AI归类", "AI推断待确认"],
+        "description": "证据可信度分级"
+      }
+    }
+  }
+}

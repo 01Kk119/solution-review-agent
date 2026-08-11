@@ -1,0 +1,7 @@
+pymupdf
+python-pptx
+python-docx
+openpyxl
+markdown
+pyyaml
+pytest

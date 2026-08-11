@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="feedback-loop-title feedback-loop-desc" shape-rendering="geometricPrecision" text-rendering="optimizeLegibility">
+  <title id="feedback-loop-title">多 Agent 项目评审数据闭环</title>
+  <desc id="feedback-loop-desc">项目资料经过结构化与编排后，进入取放、导航、调度、软件及条件明眸风险识别；版本、非标和人时结果由全局汇总生成主报告及四份附件，执行结果经反馈治理后更新案例库、知识库与 Agent 能力。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+    </marker>
+    <style>
+      text { fill: currentColor; font-family: "Microsoft YaHei", "Segoe UI", sans-serif; font-weight: 400; }
+      path, rect { stroke-linecap: round; stroke-linejoin: round; }
+      .node { fill: none; stroke: currentColor; stroke-width: 2.3; }
+      .center-node { fill: none; stroke: currentColor; stroke-width: 3; }
+      .flow { fill: none; stroke: currentColor; stroke-width: 3.2; marker-end: url(#arrow); }
+      .feedback { fill: none; stroke: currentColor; stroke-width: 2.1; stroke-dasharray: 10 8; marker-end: url(#arrow); }
+      .step { font-size: 24px; font-weight: 500; text-anchor: middle; }
+      .body { font-size: 18px; text-anchor: middle; }
+      .center-title { font-size: 30px; font-weight: 500; text-anchor: middle; }
+      .center-body { font-size: 19px; text-anchor: middle; }
+      .edge-label { font-size: 17px; text-anchor: middle; }
+      .role-box { fill: none; stroke: currentColor; stroke-width: 1.7; }
+      .role-text { font-size: 17px; font-weight: 500; text-anchor: middle; }
+      .role-note { font-size: 14px; text-anchor: middle; }
+      .node-one { fill: #C7A7AD; fill-opacity: 0.34; }
+      .node-five { fill: #A8B5A2; fill-opacity: 0.34; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1920" height="1080" fill="#ffffff" stroke="none"/>
+
+  <path class="flow" d="M1140 92 C1190 92 1235 118 1280 162"/>
+  <path class="flow" d="M1670 252 C1770 290 1810 335 1815 385"/>
+  <path class="flow" d="M1810 515 C1800 550 1760 580 1700 600"/>
+  <path class="flow" d="M1350 820 C1330 828 1310 832 1290 835"/>
+  <path class="flow" d="M690 930 C675 910 665 882 650 860"/>
+  <path class="flow" d="M260 720 C170 660 110 600 100 515"/>
+  <path class="flow" d="M100 385 C115 320 175 270 240 245"/>
+  <path class="flow" d="M660 165 C705 120 745 95 780 90"/>
+
+  <rect class="node node-one" x="780" y="30" width="360" height="120" rx="18"/>
+  <text class="step" x="960" y="75">1　项目资料输入</text>
+  <text class="body" x="960" y="110">方案 · 图纸 · 会议 · 证据</text>
+
+  <rect class="node" x="1280" y="130" width="420" height="130" rx="18"/>
+  <text class="step" x="1490" y="178">2　结构化与证据索引</text>
+  <text class="body" x="1490" y="214">Requirement Package · Evidence Index</text>
+
+  <rect class="node" x="1500" y="385" width="370" height="130" rx="18"/>
+  <text class="step" x="1685" y="433">3　Planner / Runner</text>
+  <text class="body" x="1685" y="469">任务编排 · 权限门禁 · 并发控制</text>
+
+  <rect class="node" x="1350" y="600" width="520" height="250" rx="22"/>
+  <text class="step" x="1610" y="636">4　风险识别 Agent 组</text>
+
+  <rect class="role-box" x="1370" y="660" width="230" height="48" rx="11"/>
+  <text class="role-text" x="1485" y="690">导航 / 控制 TPM</text>
+
+  <rect class="role-box" x="1620" y="660" width="230" height="48" rx="11"/>
+  <text class="role-text" x="1735" y="690">调度 / 效率 TPM</text>
+
+  <rect class="role-box" x="1370" y="720" width="230" height="48" rx="11"/>
+  <text class="role-text" x="1485" y="750">软件 / RCS / 接口 TPM</text>
+
+  <rect class="role-box" x="1620" y="720" width="230" height="48" rx="11"/>
+  <text class="role-text" x="1735" y="750">取放 TPM</text>
+
+  <rect class="role-box" x="1370" y="780" width="480" height="52" rx="11"/>
+  <text class="role-text" x="1610" y="802">库位明眸 TPM</text>
+  <text class="role-note" x="1610" y="821">按证据条件触发</text>
+
+  <rect class="node node-five" x="690" y="835" width="650" height="215" rx="22"/>
+  <text class="step" x="1015" y="872">5　交付决策与文件输出组</text>
+
+  <rect class="role-box" x="715" y="890" width="285" height="40" rx="10"/>
+  <text class="role-text" x="857.5" y="916">证据质检 TPM</text>
+
+  <rect class="role-box" x="1030" y="890" width="285" height="40" rx="10"/>
+  <text class="role-text" x="1172.5" y="916">版本适配 TPM</text>
+
+  <rect class="role-box" x="715" y="940" width="285" height="40" rx="10"/>
+  <text class="role-text" x="857.5" y="966">非标判定 TPM</text>
+
+  <rect class="role-box" x="1030" y="940" width="285" height="40" rx="10"/>
+  <text class="role-text" x="1172.5" y="966">人时估算 TPM</text>
+
+  <rect class="role-box" x="715" y="990" width="600" height="40" rx="10"/>
+  <text class="role-text" x="1015" y="1016">全局汇总 TPM</text>
+
+  <text class="role-note" x="1015" y="1044">主报告 + 版本 / 定制 / 非标 / 人时附件</text>
+
+  <rect class="node" x="220" y="720" width="440" height="140" rx="18"/>
+  <text class="step" x="440" y="767">6　执行结果回收</text>
+  <text class="body" x="440" y="803">版本采用 · 问题关闭 · 实际人时</text>
+  <text class="body" x="440" y="832">测试、验收与项目反馈</text>
+
+  <rect class="node" x="50" y="385" width="390" height="130" rx="18"/>
+  <text class="step" x="245" y="433">7　反馈治理</text>
+  <text class="body" x="245" y="465">项目资料 + 评估/执行结果</text>
+  <text class="body" x="245" y="493">质检 · 脱敏 · 去重 · 人工审批</text>
+
+  <rect class="node" x="220" y="130" width="440" height="130" rx="18"/>
+  <text class="step" x="440" y="178">8　知识入库与能力发布</text>
+  <text class="body" x="440" y="214">案例 · 规则 · 基线 · AgentSpec / Skill</text>
+  <text class="body" x="440" y="240">形成版本，供下一项目复用</text>
+
+  <rect class="center-node" x="680" y="385" width="560" height="260" rx="28"/>
+  <text class="center-title" x="960" y="440">受控知识与 Agent 能力底座</text>
+  <text class="center-body" x="960" y="490">案例库 · 领域知识库 · Agent 能力注册表</text>
+  <text class="center-body" x="960" y="540">质检 · 脱敏 · 人工审批 · 版本发布</text>
+  <text class="center-body" x="960" y="590">项目反馈进入下一轮检索与能力配置</text>
+
+  <path class="feedback" d="M620 255 C665 305 700 340 735 385"/>
+  <path class="feedback" d="M1240 455 C1360 430 1430 430 1500 445"/>
+  <text class="edge-label" x="1380" y="410">检索增强 / 能力配置</text>
+</svg>

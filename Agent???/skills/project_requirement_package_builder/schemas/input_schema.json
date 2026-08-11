@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "input_project folder convention",
+  "description": "输入项目文件夹约定。子目录结构不是强制的：extract 会递归扫描输入目录下所有受支持文件；推荐但不要求按下述分类放置。",
+  "type": "object",
+  "properties": {
+    "input_dir": { "type": "string", "description": "项目资料根目录" },
+    "recommended_subdirs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [
+        "01_customer_ppt",
+        "02_customer_pdf",
+        "03_excel",
+        "04_word_docs",
+        "05_meeting_summary",
+        "06_transcripts",
+        "07_images",
+        "08_videos_optional",
+        "09_other"
+      ]
+    },
+    "supported_extensions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [".pptx", ".pdf", ".xlsx", ".xls", ".docx", ".md", ".txt", ".html", ".htm", ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"]
+    },
+    "media_extensions_registered_only": {
+      "type": "array",
+      "description": "仅登记不解析（预留视频/音频接口）",
+      "items": { "type": "string" },
+      "default": [".mp4", ".mov", ".avi", ".mkv", ".mp3", ".m4a", ".wav", ".flac", ".aac", ".webm"]
+    }
+  },
+  "required": ["input_dir"]
+}

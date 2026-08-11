@@ -1,0 +1,39 @@
+# project_requirement_package_builder 配置
+# 方案侧结构化资料包生成 Skill（对内口径：项目订单原始资料包）
+
+skill_name: project_requirement_package_builder
+skill_version: "0.1.0"
+language: zh-CN
+
+# 知识库目录（相对本 config 所在目录）。
+# 顺序即优先级：后面的目录用于补充，冲突时以排前的为准。
+# 注意：知识库只能用于解释 / 归类 / 名词规范化 / 提出待确认项，
+#      不允许据此编造资料中不存在的项目事实。
+knowledge_dirs:
+  - ./knowledge
+  - ../../基础知识库
+
+extraction:
+  # 小于该像素/字节的内嵌图片视为图标噪声，跳过
+  min_image_px: 80
+  min_image_bytes: 3000
+  # PDF 页面文本字符数低于该阈值且页面含图形/图片时，
+  # 渲染整页快照并标记 needs_visual_reading（交给 AI 视觉读取，替代本地 OCR）
+  snapshot_when_text_below_chars: 40
+  page_snapshot_dpi: 150
+  # Excel 单 sheet 转 Markdown 表格的最大行数（超出截断并在单元中注明）
+  excel_max_rows_per_sheet: 400
+  excel_max_cols_per_sheet: 40
+  # 纯文本/转写文件按行分块的块大小
+  txt_chunk_lines: 80
+  # 视频/音频：当前不解析，仅登记（预留接口）
+  media_extensions: [.mp4, .mov, .avi, .mkv, .mp3, .m4a, .wav, .flac, .aac, .webm]
+
+output:
+  markdown_filename: project_requirement_package.md
+  html_filename: project_requirement_package.html
+  metadata_filename: metadata.json
+  evidence_filename: evidence_index.json
+  missing_info_filename: missing_info_checklist.md
+  assets_dirname: assets
+  extracted_dirname: extracted   # Stage-1 抽取中间产物目录（AI 读取用）

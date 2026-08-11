@@ -1,0 +1,8 @@
+interface:
+  display_name: "明眸领域风险识别 TPM"
+  short_description: "识别库位明眸在视觉、安装、算力、网络、模型和系统接口方面的项目风险"
+  default_prompt: "Use $mingmou-risk-tpm to review this project for 库位明眸 domain risks with evidence."
+
+policy:
+  allow_implicit_invocation: true
+

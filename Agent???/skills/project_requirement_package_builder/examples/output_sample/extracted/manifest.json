@@ -1,0 +1,54 @@
+{
+  "skill_name": "project_requirement_package_builder",
+  "skill_version": "0.1.0",
+  "generated_at": "2026-07-08T15:13:00+08:00",
+  "input_dir": "/Users/ybc/AIWORK/Order DATA/skills/project_requirement_package_builder/examples/input_project_sample",
+  "output_dir": "/Users/ybc/AIWORK/Order DATA/skills/project_requirement_package_builder/examples/output_sample",
+  "project_name": "示例项目（mock）",
+  "language": "zh-CN",
+  "totals": {
+    "files": 2,
+    "ok": 2,
+    "partial": 0,
+    "failed": 0,
+    "skipped": 0,
+    "units": 4,
+    "needs_visual_reading": 0
+  },
+  "files": [
+    {
+      "file_id": "F01",
+      "source_file": "05_meeting_summary/summary.md",
+      "source_type": "md",
+      "parse_status": "ok",
+      "error": "",
+      "stats": {
+        "units": 3,
+        "text_units": 3,
+        "table_units": 0,
+        "image_units": 0,
+        "needs_visual_reading": 0,
+        "text_chars": 90
+      },
+      "notes": [],
+      "extracted_json": "extracted/F01.json"
+    },
+    {
+      "file_id": "F02",
+      "source_file": "06_transcripts/transcript.txt",
+      "source_type": "txt",
+      "parse_status": "ok",
+      "error": "",
+      "stats": {
+        "units": 1,
+        "text_units": 1,
+        "table_units": 0,
+        "image_units": 0,
+        "needs_visual_reading": 0,
+        "text_chars": 83
+      },
+      "notes": [],
+      "extracted_json": "extracted/F02.json"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "file_id": "F01",
+  "source_file": "05_meeting_summary/summary.md",
+  "source_type": "md",
+  "parse_status": "ok",
+  "error": "",
+  "stats": {
+    "units": 3,
+    "text_units": 3,
+    "table_units": 0,
+    "image_units": 0,
+    "needs_visual_reading": 0,
+    "text_chars": 90
+  },
+  "notes": [],
+  "units": [
+    {
+      "locator": "章节「示例项目方案握手会纪要（mock）」",
+      "kind": "text",
+      "text": "# 示例项目方案握手会纪要（mock）"
+    },
+    {
+      "locator": "章节「项目概述」",
+      "kind": "text",
+      "text": "## 项目概述\n客户 ACME 需要 3 台无人叉车做托盘平面搬运，从输送线取货送至线库。"
+    },
+    {
+      "locator": "章节「车辆配置」",
+      "kind": "text",
+      "text": "## 车辆配置\n货叉宽度 125mm，门架 3 米。"
+    }
+  ]
+}

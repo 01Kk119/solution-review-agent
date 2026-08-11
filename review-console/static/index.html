@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="本地方案评审 Agent 工作台">
+  <title>方案评审工作台</title>
+  <link rel="stylesheet" href="/styles.css?v=12">
+  <link rel="stylesheet" href="/minimal.css?v=23">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span>SR</span>
+          <i><b></b><b></b><b></b></i>
+        </div>
+        <div class="brand-copy"><strong>方案评审工作台</strong><span>Solution Review Console</span></div>
+      </div>
+      <div class="top-actions">
+        <span class="local-pill" id="serviceStatus"><i></i> CHECKING AI SERVICE</span>
+        <button class="primary small" id="newProjectBtn">＋ 新建项目</button>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="side-heading">
+        <span>项目</span><b id="projectCount">0</b>
+      </div>
+      <label class="search">
+        <span>⌕</span><input id="searchInput" placeholder="搜索项目编号或名称">
+      </label>
+      <div id="projectList" class="project-list"></div>
+      <div class="sidebar-footer">
+        <button class="knowledge-entry" id="knowledgeBaseBtn">
+          <span class="knowledge-entry-icon">KB</span>
+          <span><strong>后端知识库</strong><small>查看 Agent 使用的基础知识</small></span>
+          <i>→</i>
+        </button>
+        <div class="storage-card">
+          <span>数据存储</span>
+          <strong>SQLite · 本机</strong>
+          <small>原始资料、AI 结果、运行记录分开保存</small>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="empty-state" id="emptyState">
+        <div class="empty-icon">◎</div>
+        <h1>选择一个项目开始</h1>
+        <p>查看资料、Agent 处理流程、风险结论和评审产物。</p>
+      </section>
+
+      <div id="projectView" hidden>
+        <section class="hero">
+          <div>
+            <div class="eyebrow"><span id="projectKey"></span><span id="projectStatus" class="status"></span></div>
+            <h1 id="projectName"></h1>
+            <p id="projectMeta"></p>
+          </div>
+          <div class="hero-actions">
+            <label class="ghost upload-button"><span id="uploadButtonText">上传资料</span><input type="file" id="fileInput" multiple></label>
+            <button class="primary" id="startRunBtn"><span>▶</span> 启动方案评审</button>
+            <button class="ghost danger" id="rerunBtn" hidden><span>↻</span> 重新评审</button>
+          </div>
+        </section>
+
+        <section class="stats">
+          <div><span>初始上传资料</span><strong id="fileCount">0</strong><small>份文件</small></div>
+          <div><span>AI 产物</span><strong id="artifactCount">0</strong><small>份结果</small></div>
+          <div class="nonstandard-stat"><span>非标开发项</span><strong id="nonstandardItems">待评估</strong></div>
+          <div><span>最近运行</span><strong id="runStatus">未运行</strong><small id="runTime">—</small></div>
+          <div class="risk-stat"><span>风险等级</span><strong id="riskLevel">—</strong></div>
+        </section>
+
+        <section class="decision-summary-panel">
+          <div class="decision-summary-head">
+            <div><span class="section-no">KEY</span><h2>项目关键结论</h2></div>
+            <span>内容来自项目 Markdown 产物，保存后同步回写文件</span>
+          </div>
+          <div id="decisionSummaryGrid" class="decision-summary-grid"></div>
+        </section>
+
+        <section class="panel process-panel">
+          <div class="panel-head">
+            <div><span class="section-no">01</span><h2>Agent 处理流程</h2></div>
+            <div class="run-note" id="runNote">点击“启动方案评审”后，这里会实时显示进度</div>
+          </div>
+          <div id="pipeline" class="pipeline"></div>
+          <div id="processExplainer" class="process-explainer" hidden>
+            <div class="explainer-intro">
+              <strong>每一步具体在做什么</strong>
+              <span>点击上方编号，只查看对应步骤；再次点击即可收起。</span>
+            </div>
+            <div id="pipelineDetails" class="pipeline-details"></div>
+          </div>
+          <details id="eventDrawer" class="event-drawer" hidden>
+            <summary>查看本次运行记录 <span>仅显示状态摘要，不暴露内部推理</span></summary>
+            <div id="eventList" class="events"></div>
+          </details>
+        </section>
+
+        <div class="project-data-grid">
+          <section class="panel source-panel">
+            <div class="panel-head">
+              <div><span class="section-no">02</span><h2>初始上传资料</h2></div>
+              <div class="run-note">评审前的原始文件</div>
+            </div>
+            <div id="fileList" class="file-list"></div>
+          </section>
+
+          <section class="panel final-output-panel">
+            <div class="panel-head">
+              <div><span class="section-no">03</span><h2>最终输出</h2></div>
+              <div class="run-note">包含步骤 6 交付附件与最终报告</div>
+            </div>
+            <div id="finalOutputList" class="final-output-list"></div>
+          </section>
+        </div>
+
+        <section class="panel knowledge-feedback-panel">
+          <div class="panel-head">
+            <div><span class="section-no">04</span><h2>TPM 知识反馈</h2></div>
+            <button type="button" class="primary small" id="newFeedbackBtn">＋ 新增反馈</button>
+          </div>
+          <p class="knowledge-feedback-intro">保存后生成原始反馈 Markdown；仅在手动启动 AI 分析并由 TPM 确认后，才写入所选 Agent 的知识库。不会触发项目重新评审。</p>
+          <div id="knowledgeFeedbackList" class="knowledge-feedback-list"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="projectDialog">
+    <form method="dialog" id="projectForm">
+      <div class="dialog-head"><div><span>NEW PROJECT</span><h2>新建评审项目</h2></div><button type="button" class="icon-btn" data-close-dialog="projectDialog" aria-label="关闭">×</button></div>
+      <label>项目编号<input name="project_key" placeholder="例如 VN26099" required></label>
+      <label>项目名称<input name="name" placeholder="例如 美国仓储搬运一期" required></label>
+      <div class="form-row">
+        <label>客户<input name="customer" placeholder="选填"></label>
+        <label>负责人<input name="owner" placeholder="选填"></label>
+      </div>
+      <p class="privacy-note">项目会写入本机 SQLite 数据库，上传文件保存在本机 data/uploads 目录。</p>
+      <div class="dialog-actions"><button type="button" class="ghost" data-close-dialog="projectDialog">取消</button><button type="submit" value="default" class="primary">创建项目</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="editProjectDialog">
+    <form method="dialog" id="editProjectForm">
+      <div class="dialog-head"><div><span>EDIT PROJECT</span><h2>编辑项目信息</h2></div><button type="button" class="icon-btn" data-close-dialog="editProjectDialog" aria-label="关闭">×</button></div>
+      <label>项目编号<input name="project_key" placeholder="例如 VN26099" required></label>
+      <label>项目名称<input name="name" placeholder="例如 美国仓储搬运一期" required></label>
+      <p class="privacy-note">此处仅修改项目编号和项目名称，不会移动或删除已上传的资料与评审结果。</p>
+      <div class="dialog-actions"><button type="button" class="ghost" data-close-dialog="editProjectDialog">取消</button><button type="submit" value="default" class="primary">保存修改</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="deleteProjectDialog">
+    <div class="delete-project-dialog-inner">
+      <div class="dialog-head"><div><span>DELETE PROJECT</span><h2>确认删除项目？</h2></div><button type="button" class="icon-btn" data-close-dialog="deleteProjectDialog" aria-label="关闭">×</button></div>
+      <p id="deleteProjectName" class="delete-project-name"></p>
+      <p class="delete-warning">删除后，项目记录、上传资料和生成结果文件夹都会从本机永久移除，无法恢复。</p>
+      <div class="dialog-actions"><button type="button" class="ghost" data-close-dialog="deleteProjectDialog">取消</button><button type="button" class="primary danger-primary" id="confirmDeleteProjectBtn">确认删除</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="decisionEditDialog" class="decision-edit-dialog">
+    <form method="dialog" id="decisionEditForm">
+      <div class="dialog-head"><div><span>EDIT MARKDOWN</span><h2 id="decisionEditTitle">编辑项目结论</h2></div><button type="button" class="icon-btn" data-close-dialog="decisionEditDialog" aria-label="关闭">×</button></div>
+      <p id="decisionEditSource" class="decision-edit-source"></p>
+      <label>内容<textarea id="decisionEditContent" name="content" required></textarea></label>
+      <p class="privacy-note">保存后将直接更新该项目对应的 Markdown 产物。项目评审运行期间不能编辑。</p>
+      <div class="dialog-actions"><button type="button" class="ghost" data-close-dialog="decisionEditDialog">取消</button><button type="submit" class="primary">保存并更新 Markdown</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="feedbackDialog" class="feedback-dialog">
+    <form method="dialog" id="feedbackForm">
+      <div class="dialog-head">
+        <div><span>TPM KNOWLEDGE FEEDBACK</span><h2 id="feedbackDialogTitle">新增 TPM 知识反馈</h2></div>
+        <button type="button" class="icon-btn" data-close-dialog="feedbackDialog" aria-label="关闭">×</button>
+      </div>
+      <p class="feedback-scope-note">本功能只新增或修订所选 Agent 的知识库，不修改 Agent 架构、评审流程和输出物格式。</p>
+      <div class="form-row">
+        <label>反馈标题<input name="title" placeholder="例如：料车动态角度下的放货容差计算" maxlength="120" required></label>
+        <label>反馈来源<select name="source_type" id="feedbackSourceType" required></select></label>
+      </div>
+      <label>关联 Agent / 知识库<select name="target_key" id="feedbackTarget" required></select></label>
+      <div class="form-row">
+        <label>适用版本<input name="version_info" placeholder="例如 5.2.2；不确定可留空"></label>
+        <label>车型 / 载具<input name="vehicle_info" placeholder="例如 VNE40 + 料车尺寸"></label>
+      </div>
+      <label>应用场景<textarea name="scenario" rows="2" placeholder="说明什么条件下会使用这条知识"></textarea></label>
+      <label>不适用范围<textarea name="exclusions" rows="2" placeholder="选填；写明边界可避免 Agent 误用"></textarea></label>
+      <label>TPM 原始反馈<textarea name="raw_content" rows="7" maxlength="20000" placeholder="填写你复核、测量或计算后确认的原始内容。AI 不会改写这部分。" required></textarea></label>
+      <details class="feedback-calculation">
+        <summary>补充计算记录（可选）</summary>
+        <div class="calculation-grid">
+          <label>输入参数<textarea name="calculation_parameters" rows="2"></textarea></label>
+          <label>测量值<input name="calculation_measured_value"></label>
+          <label>单位<input name="calculation_unit"></label>
+          <label>数据来源<input name="calculation_data_source"></label>
+          <label>计算方法<textarea name="calculation_method" rows="2"></textarea></label>
+          <label>公式<textarea name="calculation_formula" rows="2"></textarea></label>
+          <label>计算结果<input name="calculation_result"></label>
+          <label>比较阈值<input name="calculation_threshold"></label>
+          <label class="calculation-conclusion">TPM 结论<textarea name="calculation_conclusion" rows="2"></textarea></label>
+        </div>
+      </details>
+      <fieldset class="feedback-attachments">
+        <legend>引用项目已有资料（可选，最多 3 份）</legend>
+        <p>这里只建立证据引用，不复制项目文件。</p>
+        <div id="feedbackAttachmentOptions"></div>
+      </fieldset>
+      <p class="privacy-note">原始反馈保存后可以在 AI 分析前继续编辑；分析完成后将锁定，补充事实请新建一条反馈。</p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close-dialog="feedbackDialog">取消</button>
+        <button type="submit" class="primary" id="saveFeedbackBtn">保存原始反馈 MD</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="feedbackAnalysisDialog" class="feedback-analysis-dialog">
+    <form method="dialog" id="feedbackAnalysisForm">
+      <div class="dialog-head">
+        <div><span>HUMAN CONFIRMATION</span><h2 id="feedbackAnalysisTitle">AI 知识分析</h2></div>
+        <button type="button" class="icon-btn" data-close-dialog="feedbackAnalysisDialog" aria-label="关闭">×</button>
+      </div>
+      <div id="feedbackAnalysisMeta" class="feedback-analysis-meta"></div>
+      <label>分析结论与建议知识条目
+        <textarea id="feedbackAnalysisContent" name="content" rows="20"></textarea>
+      </label>
+      <p class="feedback-marker-note">只有 <code>KB_PATCH_START</code> 与 <code>KB_PATCH_END</code> 之间的内容会写入正式知识库。你可以在确认前修改。</p>
+      <div id="feedbackAnalysisError" class="feedback-analysis-error" hidden></div>
+      <div class="dialog-actions feedback-analysis-actions">
+        <button type="button" class="ghost" id="reanalyzeFeedbackBtn">重新 AI 分析</button>
+        <button type="button" class="ghost" id="saveFeedbackAnalysisBtn">保存修改</button>
+        <button type="button" class="primary" id="publishFeedbackBtn">TPM 确认并写入知识库</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="rerunDialog">
+    <div class="rerun-dialog-inner">
+      <div class="dialog-head">
+        <div><span>CONFIRM RERUN</span><h2>确认重新评审？</h2></div>
+        <button type="button" class="icon-btn" data-close-dialog="rerunDialog" aria-label="关闭">×</button>
+      </div>
+      <p id="rerunProjectName" class="rerun-project-name"></p>
+      <div class="rerun-options">
+        <section>
+          <strong>保留历史</strong>
+          <p>归档当前结果并保留旧运行记录。</p>
+          <button type="button" class="primary" id="preserveHistoryRerunBtn">重新评审并保留历史</button>
+        </section>
+        <section class="danger-option">
+          <strong>全部重置</strong>
+          <p>删除该项目全部历史评审结果和运行记录，再重新评审项目。</p>
+          <button type="button" class="primary danger-primary" id="replaceAllRerunBtn">清空全部结果并重新评审</button>
+        </section>
+      </div>
+      <p class="privacy-note">两种方式都不会删除项目、初始上传资料或 Agent 知识库。</p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close-dialog="rerunDialog">取消</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="fileDialog" class="file-dialog">
+    <div class="file-dialog-inner">
+      <div class="dialog-head">
+        <div><span>STORAGE LOCATION</span><h2 id="fileDialogName">文件存储位置</h2></div>
+        <button class="icon-btn" id="closeFileDialog" aria-label="关闭">×</button>
+      </div>
+      <div class="location-meta" id="fileDialogMeta"></div>
+      <label class="path-label">本地路径<textarea id="fileDialogPath" readonly></textarea></label>
+      <p class="privacy-note">文件保存在本机。点击下方按钮只会打开 Windows 资源管理器，不会下载或移动文件。</p>
+      <div class="dialog-actions">
+        <button class="ghost" id="copyPathBtn">复制路径</button>
+        <button class="primary" id="revealFileBtn">在资源管理器中定位</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="previewDialog" class="preview-dialog">
+    <div class="preview-dialog-inner">
+      <div class="dialog-head preview-head">
+        <div><span id="previewType">FILE PREVIEW</span><h2 id="previewName">文件预览</h2></div>
+        <button class="icon-btn" id="closePreviewDialog" aria-label="关闭预览">×</button>
+      </div>
+      <div class="preview-meta" id="previewMeta"></div>
+      <div class="preview-content" id="previewContent"></div>
+      <div class="dialog-actions preview-actions">
+        <button class="ghost" id="previewLocationBtn">查看存储位置</button>
+        <button class="primary" id="previewDoneBtn">关闭预览</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="knowledgeDialog" class="knowledge-dialog">
+    <div class="knowledge-dialog-inner">
+      <div class="dialog-head">
+        <div><span>AGENT KNOWLEDGE BASE</span><h2>后端知识库</h2></div>
+        <button class="icon-btn" id="closeKnowledgeDialog" aria-label="关闭知识库">×</button>
+      </div>
+      <div class="knowledge-summary">
+        <div><span>知识库文件</span><strong id="knowledgeFileCount">0</strong></div>
+        <button class="ghost" id="copyKnowledgeRootBtn">复制根目录</button>
+        <button class="primary" id="revealKnowledgeRootBtn">打开知识库目录</button>
+      </div>
+      <label class="path-label">本地根目录<input id="knowledgeRootPath" readonly></label>
+      <div class="knowledge-list-head"><strong>目录内容</strong><span>点击条目可在资源管理器中定位</span></div>
+      <div id="knowledgeList" class="knowledge-list"></div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script src="/app.js?v=26"></script>
+</body>
+</html>
