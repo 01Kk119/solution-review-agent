@@ -8,5 +8,6 @@ Thumbs.db
 *.key
 *.pem
 review-console/data/
+build/
+dist/
 02_项目资料与运行数据/
-

@@ -10,6 +10,7 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import sys
 import threading
 import time
 import uuid
@@ -37,8 +38,16 @@ from siliconflow import (
 from vehicle_reconciliation import build_vehicle_reconciliation, compact_vehicle_context
 
 
-APP_DIR = Path(__file__).resolve().parent
-WORKSPACE = APP_DIR.parent
+if getattr(sys, "frozen", False):
+    # PyInstaller extracts bundled read-only resources below _MEIPASS. Runtime
+    # data must live beside the executable so it survives application restarts.
+    APP_DIR = Path(getattr(sys, "_MEIPASS")).resolve()
+    WORKSPACE = APP_DIR
+    INSTALL_ROOT = Path(sys.executable).resolve().parent
+else:
+    APP_DIR = Path(__file__).resolve().parent
+    WORKSPACE = APP_DIR.parent
+    INSTALL_ROOT = WORKSPACE.parent
 
 
 def _configured_path(variable: str, default: Path) -> Path:
@@ -48,7 +57,11 @@ def _configured_path(variable: str, default: Path) -> Path:
 
 
 MIGRATION_ROOT = WORKSPACE.parent
-DEFAULT_RUNTIME_ROOT = MIGRATION_ROOT / "02_项目资料与运行数据"
+DEFAULT_RUNTIME_ROOT = (
+    INSTALL_ROOT / "方案评审数据"
+    if getattr(sys, "frozen", False)
+    else MIGRATION_ROOT / "02_项目资料与运行数据"
+)
 DATA_DIR = _configured_path(
     "REVIEW_CONSOLE_DATA_PATH", DEFAULT_RUNTIME_ROOT / "工作台数据"
 )
@@ -65,7 +78,12 @@ OBSIDIAN_VAULT_DIR = _configured_path(
     "OBSIDIAN_VAULT_PATH", DEFAULT_OBSIDIAN_VAULT_DIR
 )
 KNOWLEDGE_BASE_DIR = _configured_path(
-    "REVIEW_KNOWLEDGE_BASE_PATH", WORKSPACE / "Agent知识库" / "agent" / "03_knowledge"
+    "REVIEW_KNOWLEDGE_BASE_PATH",
+    (
+        WORKSPACE / "knowledge" / "agent" / "03_knowledge"
+        if getattr(sys, "frozen", False)
+        else WORKSPACE / "Agent知识库" / "agent" / "03_knowledge"
+    ),
 )
 MINGMOU_KNOWLEDGE_BASE_DIR = KNOWLEDGE_BASE_DIR / "brighteyes"
 ROLE_KNOWLEDGE_FILES = {
